@@ -13,6 +13,11 @@ public class ConverterController {
     @Autowired
     private ConverterService converterService;
 
+    @RequestMapping("/")
+    public ResponseEntity<String> healthCheck() {
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
     @PostMapping(value = "/standardToSimplified", consumes = "application/json", produces = "application/json")
     public ResponseEntity<String> standardToSimplified(@RequestBody String input) {
         InputWrapper inputWrapper;
