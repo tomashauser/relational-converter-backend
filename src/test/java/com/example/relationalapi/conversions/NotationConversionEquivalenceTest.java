@@ -1,8 +1,7 @@
-package com.example.relationalapi.notationconversions;
+package com.example.relationalapi.conversions;
 
 import com.example.relationalapi.endpoint.ConverterService;
 import com.example.relationalapi.endpoint.InputWrapper;
-import com.example.relationalapi.languages.ra.ast.expression.Expression;
 import com.example.relationalapi.languages.ra.visitors.RandomExpressionGenerator;
 import org.junit.Test;
 import org.junit.jupiter.api.TestInstance;

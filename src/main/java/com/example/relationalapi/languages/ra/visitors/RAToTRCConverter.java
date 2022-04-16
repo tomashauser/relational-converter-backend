@@ -157,8 +157,16 @@ public class RAToTRCConverter implements RAVisitor<Pair<Header, Formula>> {
         return new Pair<>(subtreeResult.a, new FormulaParentheses(subtreeResult.b));
     }
 
-    public Pair<Header, Formula> visit(Projection projection) { //TODO: kontrola sloupcu
+    public Pair<Header, Formula> visit(Projection projection) {
         Pair<Header, Formula> subtreeResult = this.visit(projection.expression);
+
+        Set<String> columnsSet = new HashSet<>(projection.columnList.columnNames);
+
+        if (columnsSet.equals(subtreeResult.a.getColumns())) {
+            Header newHeader = HeaderEvaluator.evaluateProjection(projection, subtreeResult.a);
+
+            return new Pair<>(newHeader, subtreeResult.b);
+        }
 
         String freshVariable = this.freshVariableGenerator.getFreshVariable();
 
@@ -185,8 +193,11 @@ public class RAToTRCConverter implements RAVisitor<Pair<Header, Formula>> {
     public Pair<Header, Formula> visit(Selection selection) {
         Pair<Header, Formula> subtreeResult = this.visit(selection.expression);
 
-        Formula rewrittenPredicate = this.toTRCPredicateConverter.convert(selection.thetaCondition.formula, this.TUPLE_VARIABLE_NAME);
+        if (selection.thetaCondition.formula == null) {
+            return new Pair<>(subtreeResult.a, subtreeResult.b);
+        }
 
+        Formula rewrittenPredicate = this.toTRCPredicateConverter.convert(selection.thetaCondition.formula, this.TUPLE_VARIABLE_NAME);
         Formula andOperation = new AndOperation(subtreeResult.b, rewrittenPredicate);
 
         return new Pair<>(subtreeResult.a, andOperation);
@@ -222,8 +233,8 @@ public class RAToTRCConverter implements RAVisitor<Pair<Header, Formula>> {
 
         and = new AndOperation(and, this.toTRCPredicateConverter.visit(leftSemijoin.thetaCondition.formula));
 
-        ExistsQuantification existsQuantification1 = new ExistsQuantification(and, freshVariable1);
-        ExistsQuantification existsQuantification2 = new ExistsQuantification(existsQuantification1, freshVariable2);
+        ExistsQuantification existsQuantification1 = new ExistsQuantification(and, freshVariable2);
+        ExistsQuantification existsQuantification2 = new ExistsQuantification(existsQuantification1, freshVariable1);
 
         Header newHeader = HeaderEvaluator.evaluateRightSemijoin(leftSubtreeResult.a, rightSubtreeResult.a);
 
@@ -261,8 +272,8 @@ public class RAToTRCConverter implements RAVisitor<Pair<Header, Formula>> {
 
         and = new AndOperation(and, andBetweenLeft);
 
-        ExistsQuantification existsQuantification1 = new ExistsQuantification(and, freshVariable1);
-        ExistsQuantification existsQuantification2 = new ExistsQuantification(existsQuantification1, freshVariable2);
+        ExistsQuantification existsQuantification1 = new ExistsQuantification(and, freshVariable2);
+        ExistsQuantification existsQuantification2 = new ExistsQuantification(existsQuantification1, freshVariable1);
 
         Header newHeader = HeaderEvaluator.evaluateLeftSemijoin(leftSubtreeResult.a, rightSubtreeResult.a);
 
@@ -285,8 +296,8 @@ public class RAToTRCConverter implements RAVisitor<Pair<Header, Formula>> {
 
         and = new AndOperation(and, this.toTRCPredicateConverter.visit(rightSemijoin.thetaCondition.formula));
 
-        ExistsQuantification existsQuantification1 = new ExistsQuantification(and, freshVariable1);
-        ExistsQuantification existsQuantification2 = new ExistsQuantification(existsQuantification1, freshVariable2);
+        ExistsQuantification existsQuantification1 = new ExistsQuantification(and, freshVariable2);
+        ExistsQuantification existsQuantification2 = new ExistsQuantification(existsQuantification1, freshVariable1);
 
         Header newHeader = HeaderEvaluator.evaluateRightSemijoin(leftSubtreeResult.a, rightSubtreeResult.a);
 
@@ -324,8 +335,8 @@ public class RAToTRCConverter implements RAVisitor<Pair<Header, Formula>> {
 
         and = new AndOperation(and, andBetweenRight);
 
-        ExistsQuantification existsQuantification1 = new ExistsQuantification(and, freshVariable1);
-        ExistsQuantification existsQuantification2 = new ExistsQuantification(existsQuantification1, freshVariable2);
+        ExistsQuantification existsQuantification1 = new ExistsQuantification(and, freshVariable2);
+        ExistsQuantification existsQuantification2 = new ExistsQuantification(existsQuantification1, freshVariable1);
 
         Header newHeader = HeaderEvaluator.evaluateRightSemijoin(leftSubtreeResult.a, rightSubtreeResult.a);
 

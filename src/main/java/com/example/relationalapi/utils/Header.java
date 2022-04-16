@@ -3,7 +3,9 @@ package com.example.relationalapi.utils;
 import java.util.*;
 
 public class Header {
-    private Set<String> columns;
+    private final Set<String> columns;
+
+    private List<String> listData;
 
     public Header(Set<String> columns) {
         this.columns = columns;
@@ -11,6 +13,7 @@ public class Header {
 
     public Header(List<String> columns) {
         this.columns = new HashSet<>(columns);
+        this.listData = columns;
 
         if (this.columns.size() < columns.size()) {
             throw new IllegalArgumentException();
@@ -26,7 +29,7 @@ public class Header {
     }
 
     public List<String> getListData() {
-        return new ArrayList<>(this.columns);
+        return new ArrayList<>(this.listData);
     }
 
     public Set<String> getColumnsCopy() {

@@ -1,4 +1,4 @@
-package com.example.relationalapi.notationconversions;
+package com.example.relationalapi.conversions;
 
 import com.example.relationalapi.endpoint.ConverterService;
 import com.example.relationalapi.endpoint.InputWrapper;

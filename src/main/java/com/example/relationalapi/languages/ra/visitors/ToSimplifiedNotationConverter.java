@@ -48,7 +48,7 @@ public final class ToSimplifiedNotationConverter implements RAVisitor<String> {
     }
 
     public String visit(Projection projection)  {
-        String expression = projection.expression.accept(this);
+        String expression = this.visit(projection.expression);
 
         if (!(projection.expression instanceof Relation)) {
             expression = '(' + expression + ')';

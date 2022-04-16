@@ -19,6 +19,10 @@ public class ToTRCPredicateConverter implements LogicalExpressionVisitor<Formula
     }
 
     public Formula convert(Formula formula, String tupleVariable) {
+        if (formula == null) {
+            return null;
+        }
+
         this.currentTupleVariable = tupleVariable;
 
         return this.visit(formula);

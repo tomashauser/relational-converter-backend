@@ -70,7 +70,7 @@ public final class RandomExpressionGenerator {
 
         ThetaCondition thetaCondition = new ThetaCondition(null);
 
-        if (n >= 9 && getRandomNumber(0, 1) == 0) {
+        if (n >= 9 && getRandomNumber(0, 1) == 0) { // 50 % chance for an empty theta condition
             thetaCondition = generateThetaCondition(getRandomNumber(1, 3));
         }
 
