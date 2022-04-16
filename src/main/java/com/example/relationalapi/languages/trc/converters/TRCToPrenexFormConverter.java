@@ -14,7 +14,7 @@ import com.example.relationalapi.languages.ra.visitors.interfaces.LogicalExpress
 import java.util.Stack;
 
 public class TRCToPrenexFormConverter implements LogicalExpressionVisitor<Formula> {
-    private Stack<Quantification> rememberedQuantifications;
+    private Stack<Formula> rememberedQuantifications;
 
     public Formula convert(Formula formula) {
         this.rememberedQuantifications = new Stack<>();
@@ -24,12 +24,18 @@ public class TRCToPrenexFormConverter implements LogicalExpressionVisitor<Formul
         int stackSize = this.rememberedQuantifications.size();
 
         for (int i = 0;  i < stackSize; i++) {
-            Quantification q = this.rememberedQuantifications.pop();
+            Formula q = this.rememberedQuantifications.pop();
 
             if (q instanceof ForAllQuantification) {
                 result = new ForAllQuantification(result, ((ForAllQuantification) q).variableName);
-            } else {
+            } else if (q instanceof ExistsQuantification){
                 result = new ExistsQuantification(result, ((ExistsQuantification) q).variableName);
+            } else if (q instanceof NotOperation) {
+                if (((NotOperation) q).formula instanceof ForAllQuantification) {
+                    result = new NotOperation(new ForAllQuantification(result, ((ForAllQuantification) ((NotOperation) q).formula).variableName));
+                } else if (((NotOperation) q).formula instanceof ExistsQuantification) {
+                    result = new NotOperation(new ExistsQuantification(result, ((ExistsQuantification) ((NotOperation) q).formula).variableName));
+                }
             }
         }
 
@@ -79,6 +85,16 @@ public class TRCToPrenexFormConverter implements LogicalExpressionVisitor<Formul
     }
 
     public Formula visit(NotOperation notOperation) {
+        if (notOperation.formula instanceof ForAllQuantification) {
+            ForAllQuantification forAllQuantification = (ForAllQuantification) notOperation.formula;
+
+            this.rememberedQuantifications.push(new NotOperation(new ForAllQuantification(null, forAllQuantification.variableName)));
+        } else if (notOperation.formula instanceof ExistsQuantification) {
+            ExistsQuantification existsQuantification = (ExistsQuantification) notOperation.formula;
+
+            this.rememberedQuantifications.push(new NotOperation(new ExistsQuantification(null, existsQuantification.variableName)));
+        }
+
         return new NotOperation(this.visit(notOperation.formula));
     }
 

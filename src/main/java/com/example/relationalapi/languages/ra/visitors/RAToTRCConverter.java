@@ -99,12 +99,19 @@ public class RAToTRCConverter implements RAVisitor<Pair<Header, Formula>> {
         Formula rewrittenLeftSubtreeResult = this.toTRCPredicateConverter.convert(leftSubtreeResult.b, freshVariable1);
         Formula rewrittenRightSubtreeResult = this.toTRCPredicateConverter.convert(rightSubtreeResult.b, freshVariable2);
 
-        AndOperation andBetweenSubtrees = new AndOperation(rewrittenLeftSubtreeResult, rewrittenRightSubtreeResult);
+        ExistsQuantification existsQuantification = new ExistsQuantification(new AndOperation(rewrittenRightSubtreeResult, andBetweenRightAndDifference), freshVariable2);
 
-        AndOperation finalAnd = new AndOperation(andBetweenSubtrees, andBetweenRightAndDifference);
+        NotOperation not;
 
-        ExistsQuantification existsQuantification = new ExistsQuantification(finalAnd, freshVariable2);
-        ForAllQuantification forAllQuantification = new ForAllQuantification(existsQuantification, freshVariable1);
+        if (rewrittenLeftSubtreeResult instanceof BelongingPredicate) {
+            not = new NotOperation(rewrittenLeftSubtreeResult);
+        } else {
+            not = new NotOperation(new FormulaParentheses(rewrittenLeftSubtreeResult));
+        }
+
+        OrOperation or = new OrOperation(not, existsQuantification);
+
+        ForAllQuantification forAllQuantification = new ForAllQuantification(or, freshVariable1);
 
         Header newHeader = HeaderEvaluator.evaluateDivision(leftSubtreeResult.a, rightSubtreeResult.a);
 

@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
@@ -35,6 +36,7 @@ public class ToTRCConversionTest {
         Header rHeader = new Header(Arrays.asList("r1", "r2"));
         Header sHeader = new Header(Arrays.asList("s1", "s2", "s3"));
         Header tHeader = new Header(Arrays.asList("r1", "t1"));
+        Header uHeader = new Header(Collections.singletonList("r1"));
 
         HashMap<String, Header> headerHashMap = new HashMap<>();
 
@@ -43,6 +45,7 @@ public class ToTRCConversionTest {
         headerHashMap.put("R", rHeader);
         headerHashMap.put("S", sHeader);
         headerHashMap.put("T", tHeader);
+        headerHashMap.put("U", uHeader);
 
         this.schema = new Schema(headerHashMap);
     }
@@ -118,6 +121,14 @@ public class ToTRCConversionTest {
         ResponseEntity<String> r = this.converterService.convertStandardToTRC(inputWrapper);
 
         assertEquals("\\{ \\; t \\; | \\; P(t) \\land Q(t) \\; \\}", r.getBody());
+    }
+
+    @Test
+    public void convertStandardToTRC_division() {
+        InputWrapper inputWrapper = new InputWrapper("R \\div U", this.schema, false, false);
+        ResponseEntity<String> r = this.converterService.convertStandardToTRC(inputWrapper);
+
+        assertEquals("\\{ \\; t \\; | \\; \\forall p \\; (\\lnot R(p) \\lor \\exists q \\; (U(q) \\land q.r1 = p.r1 \\land t.r2 = q.r2)) \\; \\}", r.getBody());
     }
 
     @Test
@@ -233,5 +244,13 @@ public class ToTRCConversionTest {
         ResponseEntity<String> r = this.converterService.convertStandardToTRC(inputWrapper);
 
         assertEquals("\\{ \\; t \\; | \\; \\exists p \\; \\exists q \\; (R(p) \\land P(q) \\land t.p1 = p.p1 \\land t.p2 = p.p2) \\; \\}", r.getBody());
+    }
+
+    @Test
+    public void prenex() {
+        InputWrapper inputWrapper = new InputWrapper("R \\triangleleft S", this.schema, false, true);
+        ResponseEntity<String> r = this.converterService.convertStandardToTRC(inputWrapper);
+
+        assertEquals("h", r);
     }
 }
