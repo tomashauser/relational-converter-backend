@@ -83,15 +83,6 @@ public class ToTRCConversionTest {
     }
 
     @Test
-    public void convertStandardToTRC_rename_returnsError() {
-        InputWrapper inputWrapper = new InputWrapper("\\rho_{a / r1}(R)", this.schema, false, false);
-        ResponseEntity<String> r = this.converterService.convertStandardToTRC(inputWrapper);
-
-        assertEquals(r.getStatusCode(), HttpStatus.BAD_REQUEST);
-        assertEquals("Can't convert renaming into TRC.", r.getBody());
-    }
-
-    @Test
     public void convertStandardToTRC_cartesianProduct() {
         InputWrapper inputWrapper = new InputWrapper("R \\times P", this.schema, false, false);
         ResponseEntity<String> r = this.converterService.convertStandardToTRC(inputWrapper);
@@ -187,7 +178,7 @@ public class ToTRCConversionTest {
         InputWrapper inputWrapper = new InputWrapper("R \\triangleright T", this.schema, false, false);
         ResponseEntity<String> r = this.converterService.convertStandardToTRC(inputWrapper);
 
-        assertEquals("\\{ \\; t \\; | \\; T(t) \\land \\lnot \\exists p \\; \\exists q \\; (R(p) \\land T(q) \\land p.r1 = q.r1 \\land t.r1 = p.r1 \\land t.t1 = p.t1) \\; \\}", r.getBody());
+        assertEquals("\\{ \\; t \\; | \\; T(t) \\land \\lnot \\exists p \\; \\exists q \\; (R(p) \\land T(q) \\land p.r1 = q.r1 \\land t.r1 = p.r1 \\land t.r2 = p.r2) \\; \\}", r.getBody());
     }
 
     @Test
@@ -195,7 +186,7 @@ public class ToTRCConversionTest {
         InputWrapper inputWrapper = new InputWrapper("R \\triangleleft T", this.schema, false, false);
         ResponseEntity<String> r = this.converterService.convertStandardToTRC(inputWrapper);
 
-        assertEquals("\\{ \\; t \\; | \\; R(t) \\land \\lnot \\exists p \\; \\exists q \\; (R(p) \\land T(q) \\land p.r1 = q.r1 \\land t.r1 = p.r1 \\land t.r2 = p.r2) \\; \\}", r.getBody());
+        assertEquals("\\{ \\; t \\; | \\; R(t) \\land \\lnot \\exists p \\; \\exists q \\; (R(p) \\land T(q) \\land p.r1 = q.r1 \\land t.r1 = q.r1 \\land t.t1 = q.t1) \\; \\}", r.getBody());
     }
 
     @Test
@@ -227,7 +218,7 @@ public class ToTRCConversionTest {
         InputWrapper inputWrapper = new InputWrapper("R \\rtimes T", this.schema, false, false);
         ResponseEntity<String> r = this.converterService.convertStandardToTRC(inputWrapper);
 
-        assertEquals("\\{ \\; t \\; | \\; \\exists p \\; \\exists q \\; (R(p) \\land T(q) \\land p.r1 = q.r1 \\land t.r1 = p.r1 \\land t.t1 = p.t1) \\; \\}", r.getBody());
+        assertEquals("\\{ \\; t \\; | \\; \\exists p \\; \\exists q \\; (R(p) \\land T(q) \\land p.r1 = q.r1 \\land t.r1 = q.r1 \\land t.t1 = q.t1) \\; \\}", r.getBody());
     }
 
     @Test
@@ -243,6 +234,15 @@ public class ToTRCConversionTest {
         InputWrapper inputWrapper = new InputWrapper("R \\rtimes_{} P", this.schema, false, false);
         ResponseEntity<String> r = this.converterService.convertStandardToTRC(inputWrapper);
 
-        assertEquals("\\{ \\; t \\; | \\; \\exists p \\; \\exists q \\; (R(p) \\land P(q) \\land t.p1 = p.p1 \\land t.p2 = p.p2) \\; \\}", r.getBody());
+        assertEquals("\\{ \\; t \\; | \\; \\exists p \\; \\exists q \\; (R(p) \\land P(q) \\land t.p1 = q.p1 \\land t.p2 = q.p2) \\; \\}", r.getBody());
+    }
+
+    @Test
+    public void convertStandardToTRC_rename_returnsError() {
+        InputWrapper inputWrapper = new InputWrapper("\\rho_{r1 / r1}(R)", this.schema, false, false);
+        ResponseEntity<String> r = this.converterService.convertStandardToTRC(inputWrapper);
+
+        assertEquals(r.getStatusCode(), HttpStatus.BAD_REQUEST);
+        assertEquals("Can't convert renaming into TRC.", r.getBody());
     }
 }

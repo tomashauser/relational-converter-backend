@@ -45,7 +45,9 @@ public class Schema {
     }
 
     public Header getTableHeaderByName(String name) {
-        return this.schema.get(name);
+        Header header = this.schema.get(name);
+
+        return header;
     }
 
     public boolean columnExistsInTable(String tableName, String columnName) {

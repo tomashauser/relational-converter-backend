@@ -5,7 +5,7 @@ import java.util.*;
 public class Header {
     private final Set<String> columns;
 
-    private List<String> listData;
+    private final List<String> listData;
 
     public Header(Set<String> columns) {
         this.columns = columns;

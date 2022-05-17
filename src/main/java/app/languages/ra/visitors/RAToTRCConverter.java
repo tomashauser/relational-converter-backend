@@ -215,15 +215,15 @@ public class RAToTRCConverter implements RAVisitor<Pair<Header, Formula>> {
     }
 
     public Pair<Header, Formula> visit(LeftAntijoin leftAntijoin) {
-        RightSemijoin rightSemijoin = new RightSemijoin(leftAntijoin.leftExpression, leftAntijoin.rightExpression, leftAntijoin.thetaCondition);
-        Difference difference = new Difference(leftAntijoin.rightExpression, rightSemijoin);
+        LeftSemijoin leftSemijoin = new LeftSemijoin(leftAntijoin.leftExpression, leftAntijoin.rightExpression, leftAntijoin.thetaCondition);
+        Difference difference = new Difference(leftAntijoin.rightExpression, leftSemijoin);
 
         return this.visit(difference);
     }
 
     public Pair<Header, Formula> visit(RightAntijoin rightAntijoin) {
-        LeftSemijoin leftSemijoin = new LeftSemijoin(rightAntijoin.leftExpression, rightAntijoin.rightExpression, rightAntijoin.thetaCondition);
-        Difference difference = new Difference(rightAntijoin.leftExpression, leftSemijoin);
+        RightSemijoin rightSemijoin = new RightSemijoin(rightAntijoin.leftExpression, rightAntijoin.rightExpression, rightAntijoin.thetaCondition);
+        Difference difference = new Difference(rightAntijoin.leftExpression, rightSemijoin);
 
         return this.visit(difference);
     }
@@ -333,7 +333,7 @@ public class RAToTRCConverter implements RAVisitor<Pair<Header, Formula>> {
         commonColumns.retainAll(rightSubtreeColumnsCopy);
 
         Formula andBetweenCommon = this.getAndFromColumns(new ArrayList<>(commonColumns), freshVariable1, freshVariable2);
-        Formula andBetweenRight = this.getAndFromColumns(rightSubtreeResult.a.getListData(), this.TUPLE_VARIABLE_NAME, freshVariable1);
+        Formula andBetweenRight = this.getAndFromColumns(rightSubtreeResult.a.getListData(), this.TUPLE_VARIABLE_NAME, freshVariable2);
 
         Formula rewrittenLeftSubtreeResult = this.toTRCPredicateConverter.convert(leftSubtreeResult.b, freshVariable1);
         Formula rewrittenRightSubtreeResult = this.toTRCPredicateConverter.convert(rightSubtreeResult.b, freshVariable2);
