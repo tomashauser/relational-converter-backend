@@ -4,4 +4,4 @@ The purpose of the application is to provide a way to convert between two widely
 
 Moreover, the tool can also convert queries from relational algebra into relational calculus.
 
-[Some title here](./Class diagram.pdf)
+[Some title here](Class diagram.pdf)
