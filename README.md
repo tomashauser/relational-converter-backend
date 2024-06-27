@@ -1,6 +1,6 @@
 ## Introduction
 
-This project serves as a backend for my [bachelor's thesis](https://dspace.cvut.cz/handle/10467/101022).
+This project serves as a backend for my [bachelor's thesis](https://dspace.cvut.cz/handle/10467/101022). The frontend is available [here](https://github.com/tomashauser/relational-converter-frontend).
 
 The purpose of the application is to provide a way to convert between two widely used relational algebra notations.
 
