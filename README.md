@@ -34,13 +34,13 @@ In order to pefrom a converison between the two RA notation, the converter takes
 value. We can see that the branching always stops at the relation level as it is the only terminal symbol in RA.
 
 <div align="center">
-  <img src="diagrams/ra_conversion_diagram.png" alt="RA notation conversion diagram" height="500px">
+  <img src="diagrams/ra_conversion_diagram.png" alt="RA notation conversion diagram" width="80%">
 </div>
 
 The conversion from RA to TRC is a little more complicated. Returning just the resulting TRC `Formula` from each visitor class would not be sufficient as some operations such as Cartesian product or division need to have the knowledge of the resulting header of the subexpression. For that reason a pair `<Formula, Header>` is returned from each visit method. In the example below both $R$ and $S$ have attributes $r_1$, $r_2$ and $Q$ has attributes $q_1$, $q_2$, $q_3$. 
 
 <div align="center">
-  <img src="diagrams/ra_to_trc_conversion_diagram.png" alt="RA to TRC conversion diagram" height="415px">
+  <img src="diagrams/ra_to_trc_conversion_diagram.png" alt="RA to TRC conversion diagram" width="85%">
 </div>
 
 Notice that the projection and Cartesian product both return a different header. Without the headers, the Cartesian product visit method would have no way of knowing that the $q_1$ has been projected onto, and it would add the $q_2$ and $q_3$ back into the resulting expression.
